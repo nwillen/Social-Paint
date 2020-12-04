@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="feed.css">
+    <title>Social Paint</title>
+</head>
+
+
+
+<body>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js"></script>
+
+    <div>
+        <h1 id="title">Social Paint</h1>
+        <div>
+
+            <div id="control-bar">
+                <button id="create-post">Post</button>
+                <label for="imgs">Choose an Image:</label>
+                <select id="choose-img" name="imgs"></select>
+            </div>
+
+            <div id="posts">
+                <div class="post-comments">
+                    <div class="post">
+                        <div class="header">
+                            <p> Name
+                            <p>
+                            <p> Time
+                            <p>
+                        </div>
+
+                        <img src="https://www.freeiconspng.com/uploads/square-png-31.png" alt="image" width="400"
+                            height="400">
+
+                        <label class="heart"><input type="checkbox" class="like">♡</label>
+                    </div>
+                    <div id="comments">
+                        <p class="comment"> This is a comment </p>
+                        <div class ="create-comment">
+                            <label class = "comment-label" for="comment">Comment:</label>
+                            <textarea name="comment" class="comment-text" placeholder="Type comment..."  > 
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="paint" action="/client/paintApp.html">
+                <div class="form-control">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Enter username..."  />
+                </div>
+                <input id="paint-button" type="submit" value="Paint Something">
+            </form>
+
+            <script>
+                var socket = io();
+
+                const { username } = Qs.parse(location.search, {
+                    ignoreQueryPrefix: true
+                })
+
+                document.getElementById('username').value = username
+
+                let posts = document.getElementById('posts')
+
+
+                //Load posts on window load
+                window.addEventListener('load', () => {
+                    socket.emit('getPosts')
+                })
+                socket.on('sendPosts', (res) => {
+                    res.forEach((obj) => {
+                        let postComments = document.createElement('div')
+                        postComments.classList.add('post-comments')
+                        let post = document.createElement('div')
+                        post.classList.add('post')
+                        postComments.appendChild(post)
+                        let header = document.createElement('div')
+                        header.classList.add('header')
+                        post.appendChild(header)
+                        let name = document.createElement('p')
+                        let time = document.createElement('p')
+                        header.appendChild(name)
+                        header.appendChild(time)
+                        let img = document.createElement('img')
+                        post.appendChild(img)
+                        let heart = document.createElement('label')
+                        heart.classList.add('heart')
+                        heart.classList.add('heart')
+                        post.appendChild(heart)
+                        let like = document.createElement('input')
+                        like.type = 'checkbox'
+                        like.classList.add('like')
+                        like.innerHTML = '♡'
+                        like.addEventListener('click', () => {
+                            if (like.checked) {
+                                like.parentElement.style.color = 'red'
+                            } else {
+                                like.parentElement.style.color = 'black'
+                            }
+                        })
+                        heart.appendChild(like)
+                        name.innerHTML = obj.username
+                        time.innerHTML = obj.time
+                        img.src = obj.img
+                        img.width = 400
+                        img.height = 400
+                        posts.insertBefore(postComments, posts.firstChild)
+                    })
+                })
+
+                //Get the names of all the Images belonging to the username
+                socket.emit('getImgNames', username)
+                socket.on('sendImgNames', (res) => {
+                    res.forEach((obj) => {
+                        let option = document.createElement('option')
+                        option.value = obj.imgName
+                        option.innerHTML = obj.imgName
+                        document.getElementById('choose-img').appendChild(option)
+                    })
+                })
+
+                //Send the server username and image to create a Post
+                document.getElementById('create-post').addEventListener('click', () => {
+                    socket.emit('createPost', { username: username, imgName: document.getElementById('choose-img').value })
+                })
+
+            </script>
+</body>

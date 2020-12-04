@@ -1,0 +1,17 @@
+{
+  "name": "paint-app",
+  "version": "1.0.0",
+  "description": "Social Paint",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "author": "Noah Willen",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.3",
+    "mongojs": "^3.1.0",
+    "nodemon": "^2.0.6"
+  }
+}

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="paintApp.css">
+</head>
+
+<body>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js"></script>
+
+    <div id="controlBar">
+        <div class='slider'>
+            <label for="BrushSize">Brush Size</label>
+            <input name="BrushSize" type="range" min="1" max="100" value="50" class="slider" id="brushSize">
+        </div>
+
+        <div class='slider'>
+            <label for="Red">Red</label>
+            <input name="Red" type="range" min="1" max="255" value="127" class="slider" id="red">
+        </div>
+
+        <div class='slider'>
+            <label for="Green">Green</label>
+            <input name="Green" type="range" min="1" max="255" value="127" class="slider" id="green">
+        </div>
+
+        <div class='slider'>
+            <label for="Blue">Blue</label>
+            <input name="Blue" type="range" min="1" max="255" value="127" class="slider" id="blue">
+        </div>  
+        <div id="color"></div>      
+    </div>
+
+    <div id = "buttonBar">
+        <button id="save">Save</button>
+        <label for="img-name">Name Image:</label>
+        <input type="text" name="img-name" id="img-name" placeholder="Enter name..."  />
+        <button id="eraser">Erase</button>
+        <button id="clear">Clear</button>
+    </div>
+
+    
+
+
+    <canvas id="canv"></canvas>
+
+    <form id="paint" action="/client/feed.html">
+        <div class="form-control">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" placeholder="Enter username..."  />
+        </div>
+        <input id ="feed-button" type="submit" value="Paint Feed">
+    </form>
+        
+    <script>
+        var socket = io();
+
+        const { username } = Qs.parse(location.search, {
+            ignoreQueryPrefix: true
+        })
+
+        document.getElementById('username').value = username
+
+        let painting = false
+        const canvas = document.getElementById('canv')
+        const ctx = canvas.getContext('2d')
+        const brushSize = document.getElementById('brushSize')
+        const red = document.getElementById('red')
+        const green = document.getElementById('green')
+        const blue = document.getElementById('blue')
+        const clear = document.getElementById('clear')
+        const colorCirc = document.getElementById('color')
+        const save = document.getElementById('save')
+        const image = document.getElementById('image')
+        let cv
+
+        let size = 10
+        let color = rgbToHex(red.value, green.value, blue.value)
+        colorCirc.style.backgroundColor = color
+
+        window.addEventListener('load', () => {
+            canvas.height = 750
+            canvas.width = 750
+            cv = canvas.getBoundingClientRect()
+        })
+
+        window.addEventListener('resize', () => {
+            cv = canvas.getBoundingClientRect()
+        })
+
+        canvas.addEventListener('mousedown', function (e) {
+            painting = true
+            
+            ctx.lineWidth = size
+            ctx.lineCap = 'round'
+            ctx.strokeStyle = color
+            ctx.lineTo(e.clientX - cv.left, e.clientY - cv.top)
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(e.clientX - cv.left, e.clientY - cv.top)
+        })
+
+        canvas.addEventListener('mouseup', function (e) {
+            painting = false
+            ctx.beginPath()
+        })
+
+        canvas.addEventListener('mousemove', function (e) {
+            if (!painting) return
+
+            ctx.lineWidth = size
+            ctx.lineCap = 'round'
+            ctx.strokeStyle = color
+            ctx.lineTo(e.clientX - cv.left, e.clientY - cv.top)
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(e.clientX - cv.left, e.clientY - cv.top)
+        })
+
+        canvas.addEventListener('mouseleave', function() {
+            painting = false
+            ctx.beginPath()
+        })
+
+        brushSize.addEventListener('change', function () {
+            size = brushSize.value / 5
+        })
+
+        document.querySelectorAll('input').forEach((e) => {
+            e.addEventListener('input', function () {
+                if (this.id == 'brushSize') return
+                console.log(red.value + " , " + green.value + " , " + blue.value)
+                color = rgbToHex(red.value, green.value, blue.value)
+                colorCirc.style.backgroundColor = color
+            })
+        })
+
+        document.getElementById('eraser').addEventListener('click', function(){
+            color = 'white'
+        })
+
+        clear.addEventListener('click', function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        })
+
+
+        //Send the server images with username and and a name for the image
+        save.addEventListener('click', function() {
+            let dataURI = canvas.toDataURL()
+            socket.emit('saveImg', {username:username, imgName: document.getElementById('img-name').value, img:dataURI})
+        })
+
+
+        function rgbToHex(r, g, b) {
+            r = Number(r).toString(16);
+            g = Number(g).toString(16);
+            b = Number(b).toString(16);
+
+            if (r.length == 1)
+                r = "0" + r;
+            if (g.length == 1)
+                g = "0" + g;
+            if (b.length == 1)
+                b = "0" + b;
+
+            return "#" + r + g + b;
+        }
+
+    </script>
+</body>
+
+</html>

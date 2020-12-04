@@ -1,0 +1,132 @@
+* {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+#title {
+    display: block;
+    background-color: lightcoral;
+    font-size: 80px;
+    text-align: center;
+    margin-top: 0;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 10px;
+    width:50%;
+    border-radius: 30px;
+}
+
+.create-comment {
+    background-color: lightcyan;
+}
+
+.post {
+    background-color: #fff3f2;
+    width: 350px;
+    border-radius: 30px;
+}
+
+.post-comments {
+    display: block;
+    margin-left: 50%;
+    margin-right: 50%;
+    transform: translateX(-175px);
+    margin-bottom: 20px;
+}
+
+
+img {
+    width: 300px;
+    height: 300px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    border-radius: 15px;
+}
+
+p {
+    display: inline-block;
+    padding-left: 30px;
+}
+
+.like{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-left: 30px;
+}
+
+.comment {
+    background-color: lightcyan;
+    font-size: 15px;
+    width: 310px;
+    padding: 5px;
+    border-radius: 10px;
+    margin-left: 30px;
+    display: block;
+}
+
+#control-bar {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    background-color: rgba(0,255,255, 0.4);
+    border-radius: 30px;
+    width:350px;
+    padding: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#create-post {
+    border-radius: 30px;
+    background: linear-gradient(
+        to right,
+            lightgrey,
+            white
+    );
+    font-size: 20px;
+}
+
+.like {
+    height: 20px;
+}
+
+.heart {
+    height: 20px;
+}
+
+.form-control {
+    display: none;
+}
+
+select {
+    border-radius: 30px;
+}
+
+input {
+    border-radius: 30px;
+}
+
+#paint-button {
+    position: absolute;
+    left: 20px;
+    top:100px;   
+}
+
+.comment-text {
+    width: 310px;
+    height: 60px;
+    margin-left: 30px;
+    border-radius: 15px;
+    overflow-x: scroll;
+    padding: 5px;
+    overflow:auto;
+    resize:none;
+}
+
+.comment-label {
+    margin-left: 30px;
+}
+

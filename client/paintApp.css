@@ -1,0 +1,67 @@
+* {
+    font-family: 'Courier New';
+    color:darkslategrey;
+}
+
+body {
+    background: linear-gradient(
+        to right,
+        #ffe4e1,
+        white
+    );
+}
+
+#controlBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
+#buttonBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slider {
+    display: inline-block;
+}
+
+input, label {
+    display: block;
+}
+
+#color {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+}
+
+canvas {
+    border: 5px solid grey;
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-control {
+    display: none;
+}
+
+input {
+    border-radius: 30px;
+}
+
+button {
+    border-radius: 30px;
+}
+
+#feed-button {
+    position: absolute;
+    left: 20px;
+    top:100px;   
+}

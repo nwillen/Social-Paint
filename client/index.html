@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+
+<head>
+    <link rel="stylesheet" href="client/index.css">
+    <title>Social Paint</title>
+</head>
+
+<body>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+
+
+    <div id="sign-in-card">
+        <h1> Social Paint </h1>
+        
+        <form id="sign-in-form" action="/client/feed.html">
+            <div class="form-control">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" placeholder="Enter username..."  />
+            </div>
+        </form>
+        <div class="form-control">
+            <label for="pass">Password</label>
+            <input type="text" name="pass" id="pass" placeholder="Enter Password..."  />
+        </div>
+
+        <div id="button-bar">
+            <button id="sign-up-btn" class="btn">Sign Up</button>
+            <button id="sign-in-btn" class="btn">Sign In</button>
+            <button id="rmv-act-btn" class="btn">Remove Account</button>
+        </div>
+    </div>
+
+    <script>
+        var socket = io();
+
+        let signIn = document.getElementById('sign-in-btn')
+        let signUp = document.getElementById('sign-up-btn')
+        let rmvAct = document.getElementById('rmv-act-btn')
+        let username = document.getElementById('username')
+        let pass =  document.getElementById('pass')
+
+        //Sending login to server
+        signIn.onclick = () => {
+            if (username.value == "" || pass.value == "") return
+            socket.emit('signIn', { username:username.value, pass: pass.value });
+        }
+        signUp.onclick = (e) => {
+            if (username.value == "" || pass.value == "") return
+            socket.emit('signUp', { username:username.value, pass: pass.value });
+        }
+        rmvAct.onclick = (e) => {
+            if (username.value == "" || pass.value == "") return
+            socket.emit('rmvAct', { username:username.value, pass: pass.value });
+        }
+
+
+        //Recieving login result from server
+        socket.on('signUpRes', (res) => {
+            if (res) {
+                alert("Signed Up")
+            } else {
+                alert("Sign Up Fail")
+            }
+        })
+        socket.on('signInRes', (res) => {
+            if (res) {
+                alert("Signed In")
+                pass.value = ""
+                document.getElementById("sign-in-form").submit()
+            } else {
+                alert("Sign-in Fail")
+            }
+        })
+        socket.on('rmvActRes', (res) => {
+            if (res) {
+                alert("Removed Account")
+            } else {
+                alert("Remove Account Fail")
+            }
+        })
+        
+    </script>
+</body>
