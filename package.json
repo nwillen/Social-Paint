@@ -4,7 +4,7 @@
   "description": "Social Paint",
   "main": "app.js",
   "scripts": {
-    "test": "node app.js"
+    "start": "node app.js"
   },
   "author": "Noah Willen",
   "license": "ISC",
@@ -12,6 +12,11 @@
     "moment": "^2.29.1",
     "mongodb": "^3.6.3",
     "mongojs": "^3.1.0",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "socket.io": "^3.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nwillen/Dodge-Ball-Game.git"
   }
 }
