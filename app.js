@@ -72,7 +72,7 @@ io.sockets.on('connection', (socket) => {
     socket.on('createPost', (data) => {
         Database.getImgURI(data, (res) => {
             if (res) {
-                Database.addPost({username:data.username, img:res, time:getTime()}, () => {
+                Database.addPost({username:data.username, img:res, time:getTime(), id: data.id}, () => {
                     //emit success
                 })
             } else{
@@ -82,9 +82,28 @@ io.sockets.on('connection', (socket) => {
     })
 
     //Recieving client request for posts and sending back the post
-    socket.on('getPosts', function() {
+    socket.on('getPosts', () => {
         Database.getPosts((res) => {
             socket.emit('sendPosts', res)
         })
     })
+
+    socket.on('getComments', () => {
+        Database.getComments((res) => {
+            socket.emit('sendComments', res)
+        })
+    })
+
+    socket.on('sendComment', (data) => {
+        Database.sendComment(data)
+    })
+
+    //Liking and Unliking a post
+    // socket.on('likePost', (id) => {
+    //     Database.likePost(id)
+    // }) 
+
+    // socket.on('unlikePost', (id) => {
+    //     Database.unlikePost(id)
+    // })
 })

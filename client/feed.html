@@ -23,7 +23,7 @@
 
             <div id="posts">
                 <div class="post-comments">
-                    <div class="post">
+                    <!-- <div class="post">
                         <div class="header">
                             <p> Name
                             <p>
@@ -36,21 +36,21 @@
 
                         <label class="heart"><input type="checkbox" class="like">♡</label>
                     </div>
-                    <div id="comments">
+                    <div class="comments">
                         <p class="comment"> This is a comment </p>
                         <div class ="create-comment">
                             <label class = "comment-label" for="comment">Comment:</label>
                             <textarea name="comment" class="comment-text" placeholder="Type comment..."  > 
                             </textarea>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
             <form id="paint" action="/client/paintApp.html">
                 <div class="form-control">
                     <label for="username">Username</label>
-                    <input type="text" name="username" id="username" placeholder="Enter username..."  />
+                    <input type="text" name="username" id="username" placeholder="Enter username..." />
                 </div>
                 <input id="paint-button" type="submit" value="Paint Something">
             </form>
@@ -87,28 +87,74 @@
                         header.appendChild(time)
                         let img = document.createElement('img')
                         post.appendChild(img)
-                        let heart = document.createElement('label')
-                        heart.classList.add('heart')
-                        heart.classList.add('heart')
-                        post.appendChild(heart)
-                        let like = document.createElement('input')
-                        like.type = 'checkbox'
-                        like.classList.add('like')
-                        like.innerHTML = '♡'
-                        like.addEventListener('click', () => {
-                            if (like.checked) {
-                                like.parentElement.style.color = 'red'
-                            } else {
-                                like.parentElement.style.color = 'black'
-                            }
+                        // let heart = document.createElement('label')
+                        // heart.classList.add('heart')
+                        // heart.classList.add('heart')
+
+                        // post.appendChild(heart)
+                        // let like = document.createElement('input')
+                        // like.type = 'checkbox'
+                        // like.classList.add('like')
+                        // like.id = obj._id
+                        // like.innerHTML = '♡'
+                        // like.addEventListener('click', () => {
+                        //     if (like.checked) {
+                        //         // socket.emit('likePost', like.id)
+                        //         like.parentElement.style.color = 'red'
+                        //     } else {
+                        //         socket.emit('unlikePost', like.id)
+                        //         like.parentElement.style.color = 'black'
+                        //     }
+                        // })
+                        // heart.appendChild(like)
+
+                        let comments = document.createElement('div')
+                        comments.id = '1' + obj.id
+                        postComments.appendChild(comments)
+                        let cmtButton = document.createElement('button')
+                        cmtButton.innerHTML = "Comment"
+                        cmtButton.id = obj.id
+                        cmtButton.classList.add('comment-button')
+                        cmtButton.addEventListener('click', () => {
+                            let createComment = document.createElement('div')
+                            createComment.classList.add('create-comment')
+                            let commentLabel = document.createElement('label')
+                            commentLabel.classList.add('comment-label')
+                            let commentText = document.createElement('textarea')
+                            commentText.classList.add('comment-text')
+                            commentText.placeholder = "Type comment..."
+                            createComment.appendChild(commentLabel)
+                            createComment.appendChild(commentText)
+                            comments.appendChild(createComment)
+                            let commentSubmit = document.createElement('button')
+                            commentSubmit.innerHTML = "Submit"
+                            commentSubmit.classList.add('comment-submit')
+                            createComment.appendChild(commentSubmit)
+                            commentSubmit.addEventListener('click', () => {
+                                socket.emit('sendComment', ({ parent: cmtButton.id, username: username, text: commentText.value }))
+                                commentText.remove()
+                                commentSubmit.remove()
+                                createComment.remove()
+                            })
                         })
-                        heart.appendChild(like)
+                        post.appendChild(cmtButton)
+
                         name.innerHTML = obj.username
                         time.innerHTML = obj.time
                         img.src = obj.img
                         img.width = 400
                         img.height = 400
                         posts.insertBefore(postComments, posts.firstChild)
+                    })
+                    socket.emit('getComments')
+                })
+
+                socket.on('sendComments', (res) => {
+                    res.forEach((obj) => {
+                        let cmt = document.createElement('p')
+                        cmt.innerHTML = obj.username + ": " + obj.text
+                        cmt.classList.add('comment')
+                        document.getElementById('1' + obj.parent).appendChild(cmt)
                     })
                 })
 
@@ -125,7 +171,7 @@
 
                 //Send the server username and image to create a Post
                 document.getElementById('create-post').addEventListener('click', () => {
-                    socket.emit('createPost', { username: username, imgName: document.getElementById('choose-img').value })
+                    socket.emit('createPost', { username: username, imgName: document.getElementById('choose-img').value, id: Date.now() })
                 })
 
             </script>
