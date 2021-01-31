@@ -14,6 +14,9 @@
     "mongojs": "^3.1.0",
     "socket.io": "^3.1.0"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nwillen/Dodge-Ball-Game.git"
